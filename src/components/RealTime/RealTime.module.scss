@@ -1,0 +1,57 @@
+.realTime {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px auto;
+    width: 522px;
+    justify-content: center;
+    div{
+        margin: 0 10px;
+        border-radius: 4px;
+        width: 150px;
+        height: 50px;
+        border: 2px solid rgb(1, 148, 111);
+        background-color: white;
+        color:rgb(1, 148, 111) ;
+        p{
+            margin: 0;
+        }
+
+    }
+    .time{
+        width: 100%;
+        margin-bottom: 10px;
+        background-color:rgb(1, 148, 111);
+        color:white;
+        h3{
+            margin: 0;
+        }
+    }
+}
+
+
+@media screen and (max-width: 767px)  {
+    .realTime {
+            width: 90%;
+            div{
+                margin: 0 5px;
+                border-radius: 4px;
+                width: 25%;
+                height: 50px;
+                border: 2px solid rgb(1, 148, 111);
+                background-color: white;
+                color:rgb(1, 148, 111) ;
+                p{
+                    margin: 0;
+                }
+
+        
+            }
+            .time{
+                height: auto;
+                h3{
+                    font-size: 15px;
+                }
+            }
+
+    }
+}
