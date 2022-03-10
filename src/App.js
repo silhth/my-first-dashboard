@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
     
-      <h1>Precision Agricolture</h1>
+      <h1>Precision Agriculture</h1>
       <Graph/>
     </div>
   );
