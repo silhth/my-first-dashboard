@@ -1,0 +1,44 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    .graph {
+
+        margin: auto;
+        width: 400px;
+        height: 400px;
+        padding-bottom:100px;
+    }
+
+    .btn {
+        button {
+            margin: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            color: rgb(1, 148, 111);
+            cursor: pointer;
+            border: 2px solid rgb(1, 148, 111);
+            background-color: rgb(218, 218, 218);
+            transition: all 0.2s ease-in-out;
+
+            &:hover {
+                transform: scale(1.1);
+
+            }
+
+            &.active {
+                background-color: white;
+                transform: scale(1.1);
+            }
+        }
+
+    }
+}
+
+@media screen and (max-width: 767px)  {
+    .wrapper{
+        .graph{
+            width: 90%;
+            height: 300px;
+        }
+    }
+}
