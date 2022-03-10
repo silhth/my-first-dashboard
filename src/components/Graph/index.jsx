@@ -1,7 +1,8 @@
 
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAllData } from '../../store/action'
+import {  fetchAllDataJson} from '../../store/action'
+// import { fetchAllData} from '../../store/action' ---------------mockServer------------
 /* eslint-disable no-unused-vars */
 import { Chart as ChartJS } from 'chart.js/auto'
 /* eslint-disable no-unused-vars */
@@ -15,7 +16,7 @@ export const Graph = () => {
     const [newData, setNewData] = useState([])
 
     useEffect(() => {
-        dispatch(fetchAllData())
+        dispatch(fetchAllDataJson())
     }, [dispatch])
 
     const myData = useSelector(state => state)

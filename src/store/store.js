@@ -12,6 +12,10 @@ const reducer = (state = initialState, action) => {
             return (
                 action.payload
             );
+            case 'getAllDataJson':
+            return (
+                action.payload
+            );
         default:
             return state
     }
