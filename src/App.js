@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
     
-      <h1>My first Dashboard using react-chartjs-2</h1>
+      <h1>Precision Agicolture</h1>
       <Graph/>
     </div>
   );
