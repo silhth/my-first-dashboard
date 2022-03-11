@@ -17,10 +17,6 @@ const reducer = (state = initialState, action) => {
             return (
                 {...state, data:action.payload}
             );
-        case 'filterData':
-            return (
-                {...state, data:action.payload}
-            );
 
         case 'nextDay':
             return (

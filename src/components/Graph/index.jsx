@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { filterData, nextDay, previusDay } from '../../store/action'
+import { nextDay, previusDay } from '../../store/action'
 // import { fetchAllData} from '../../store/action' ---------------mockServer------------
 /* eslint-disable no-unused-vars */
 import { Chart as ChartJS } from 'chart.js/auto'
@@ -18,30 +18,46 @@ export const Graph = () => {
     const [field, setField] = useState("sens-test-sht31-rs485");
     const [showTime, setShowTime] = useState([]);
     const [newData, setNewData] = useState([]);
+    const [dailyData, setDailyData] = useState([]);
     const toDay = useSelector(state => state.day)
 
 
-    useEffect(() => allData.length > 1 && dispatch(filterData(allData)),
-        [dispatch, allData.length]);
+    useEffect(() => {
+        allData.length > 1 && setNewData(allData.filter((arr) =>
+            arr.result.end_device_ids.device_id === field).map((arr) => {
+                let data = {
+                    device_id: arr.result.end_device_ids.device_id,
+                    time: arr.result.received_at,
+                    day: new Date(arr.result.received_at).getDate(),
+                    soil_moist: arr.result.uplink_message.decoded_payload.soil_moist,
+                    temperature: arr.result.uplink_message.decoded_payload.temperature,
+                    voltage: arr.result.uplink_message.decoded_payload.voltage,
+                    humidity: arr.result.uplink_message.decoded_payload.humidity
+                };
+                return (data)
+            }
+            )
+        )
+
+
+    }, [allData, field])
 
     useEffect(() => {
-        if (allData.length > 1) {
+        if (newData.length > 1) setDailyData(newData.filter((arr) => arr.day === toDay))
+    }, [newData, field, toDay])
 
-            const data = allData.filter((arr) => arr.device_id === field && arr.day === toDay);
-            setNewData(data)
-            const myTime = data.map((arr) => arr.time.split(/(-|T|:|\.)/));
-            setShowTime(myTime && myTime.map((arr) => `${arr[4]}-${arr[2]} ${arr[6]}:${arr[8]}`))
-        }
-    }, [allData, field, toDay])
-
-
+    useEffect(() => {
+        const myTime = dailyData.map((arr) => arr.time.split(/(-|T|:|\.)/));
+        setShowTime(myTime && myTime.map((arr) => `${arr[4]}-${arr[2]} ${arr[6]}:${arr[8]}`))
+    }, [dailyData])
 
     const nextDays = () => {
-        toDay < allData[allData.length - 1].day && dispatch(nextDay(toDay));
+        toDay < newData[newData.length - 1].day && dispatch(nextDay(toDay));
     }
     const previusDays = () => {
-        toDay > allData[0].day && dispatch(previusDay(toDay));
+        toDay > newData[0].day && dispatch(previusDay(toDay));
     }
+
     return (
         <div className={style.wrapper}>
             <div className={style.btn}>
@@ -53,7 +69,7 @@ export const Graph = () => {
                 <RealTime data={newData} />
             </div>
             <div className={style.graph}>
-                {newData.length > 1 ? <>
+                {dailyData.length > 1 ? <>
                     <h2>{field}</h2>
                     <Line
                         datasetIdKey='id'
@@ -78,7 +94,7 @@ export const Graph = () => {
                                 {
                                     id: 1,
                                     label: 'temperature',
-                                    data: newData.map((arr) => arr.temperature),
+                                    data: dailyData.map((arr) => arr.temperature),
                                     yAxisID: 'y',
                                     fill: 'origin',
                                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -87,7 +103,7 @@ export const Graph = () => {
                                 {
                                     id: 2,
                                     label: 'humidity',
-                                    data: newData.map((arr) => arr.humidity),
+                                    data: dailyData.map((arr) => arr.humidity),
                                     yAxisID: 'y1',
                                     fill: 'origin',
                                     backgroundColor: 'rgba(155, 199, 172, 0.2)',
@@ -96,7 +112,7 @@ export const Graph = () => {
                                 {
                                     id: 3,
                                     label: 'soil_moist',
-                                    data: newData.map((arr) => arr.soil_moist),
+                                    data: dailyData.map((arr) => arr.soil_moist),
                                     yAxisID: 'y1',
                                     fill: 'origin',
                                     backgroundColor: 'rgba(255, 199, 132, 0.2)',
