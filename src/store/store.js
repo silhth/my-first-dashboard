@@ -2,7 +2,8 @@ import { createStore, applyMiddleware } from "redux";
 import thunk from 'redux-thunk'
 
 const initialState = {
-    data: []
+    data: [],
+    day: 11
 }
 
 
@@ -10,15 +11,28 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
         case 'getAllData':
             return (
-                action.payload
+                {...state, data:[action.payload]}
             );
-            case 'getAllDataJson':
+        case 'getAllDataJson':
             return (
-                action.payload
+                {...state, data:action.payload}
             );
+        case 'filterData':
+            return (
+                {...state, data:action.payload}
+            );
+
+        case 'nextDay':
+            return (
+                {...state, day:action.payload}
+            );
+        case 'previusDay':
+                return (
+                    {...state, day:action.payload}
+                );
         default:
             return state
     }
 }
 
-export const store = createStore(reducer, initialState,applyMiddleware(thunk))
+export const store = createStore(reducer, initialState, applyMiddleware(thunk))

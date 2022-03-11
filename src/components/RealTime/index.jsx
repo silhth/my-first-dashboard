@@ -14,12 +14,9 @@ export const RealTime = (props) => {
     ]
 
     const lastData = data[data.length - 1];
-
     useEffect(()=>
     lastData ? setDaytime(lastData.time.split(/(T|\.)/)): null
     ,[lastData])
-    
-
     return (
         <div className={style.realTime}>
             {data.length > 1 && <>

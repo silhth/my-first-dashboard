@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAllDataJson } from '../../store/action'
+import { filterData, nextDay, previusDay } from '../../store/action'
 // import { fetchAllData} from '../../store/action' ---------------mockServer------------
 /* eslint-disable no-unused-vars */
 import { Chart as ChartJS } from 'chart.js/auto'
@@ -14,39 +14,34 @@ import style from './Graph.module.scss'
 
 export const Graph = () => {
     const dispatch = useDispatch();
-    const [newData, setNewData] = useState([])
-    const [field, setField] = useState("sens-test-sht31-rs485")
+    const allData = useSelector(state => state.data);
+    const [field, setField] = useState("sens-test-sht31-rs485");
+    const [showTime, setShowTime] = useState([]);
+    const [newData, setNewData] = useState([]);
+    const toDay = useSelector(state => state.day)
+
+
+    useEffect(() => allData.length > 1 && dispatch(filterData(allData)),
+        [dispatch, allData.length]);
 
     useEffect(() => {
-        dispatch(fetchAllDataJson())
-    }, [dispatch])
+        if (allData.length > 1) {
 
-    const myData = useSelector(state => state)
-
-
-    useEffect(() => {
-        myData.length > 1 && setNewData(myData.filter((arr) =>
-            arr.result.end_device_ids.device_id === field).map((arr) => {
-                let data = {
-                    device_id: arr.result.end_device_ids.device_id,
-                    time: arr.result.received_at,
-                    soil_moist: arr.result.uplink_message.decoded_payload.soil_moist,
-                    temperature: arr.result.uplink_message.decoded_payload.temperature,
-                    voltage: arr.result.uplink_message.decoded_payload.voltage,
-                    humidity: arr.result.uplink_message.decoded_payload.humidity
-                };
-                return (data)
-            }
-            )
-        )
-
-    }, [myData, field])
+            const data = allData.filter((arr) => arr.device_id === field && arr.day === toDay);
+            setNewData(data)
+            const myTime = data.map((arr) => arr.time.split(/(-|T|:|\.)/));
+            setShowTime(myTime && myTime.map((arr) => `${arr[4]}-${arr[2]} ${arr[6]}:${arr[8]}`))
+        }
+    }, [allData, field, toDay])
 
 
 
-    const timeMin = () => newData.map((arr) => arr.time.split(/(T)/)[2].split('.')[0])
-    const temp = () => newData.map((arr) => arr.temperature.toFixed(0).toString() + ' C°')
-
+    const nextDays = () => {
+        toDay < allData[allData.length - 1].day && dispatch(nextDay(toDay));
+    }
+    const previusDays = () => {
+        toDay > allData[0].day && dispatch(previusDay(toDay));
+    }
     return (
         <div className={style.wrapper}>
             <div className={style.btn}>
@@ -54,8 +49,9 @@ export const Graph = () => {
                     onClick={() => setField("sens-test-sht31-rs485")}>🍃Field A </button>
                 <button className={field === "sens-natib-1" ? style.active : null}
                     onClick={() => setField("sens-natib-1")}>🌿Field B </button>
+
+                <RealTime data={newData} />
             </div>
-            <RealTime data={newData} />
             <div className={style.graph}>
                 {newData.length > 1 ? <>
                     <h2>{field}</h2>
@@ -66,14 +62,18 @@ export const Graph = () => {
                         options={{
                             maintainAspectRatio: false,
                             responsive: true,
-                            tooltips: {
-                                callbacks: {
-                                    label: temp()
+                            elements: {
+                                point: {
+                                    radius: 0
                                 },
+                                line: {
+                                    borderWidth: 1
+
+                                }
                             }
                         }}
                         data={{
-                            labels: timeMin(),
+                            labels: showTime,
                             datasets: [
                                 {
                                     id: 1,
@@ -97,7 +97,7 @@ export const Graph = () => {
                                     id: 3,
                                     label: 'soil_moist',
                                     data: newData.map((arr) => arr.soil_moist),
-                                    yAxisID: 'y2',
+                                    yAxisID: 'y1',
                                     fill: 'origin',
                                     backgroundColor: 'rgba(255, 199, 132, 0.2)',
                                     borderColor: 'rgba(255, 199, 132)'
@@ -106,7 +106,12 @@ export const Graph = () => {
                         }}
                     /></>
                     : <p>loading</p>}
+                <div className={style.day}>
+                    <p onClick={previusDays}>⯇</p>
+                    <p onClick={nextDays}>⯈</p>
+                </div>
             </div>
+
         </div>
     )
 }
