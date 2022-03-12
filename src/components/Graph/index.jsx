@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { nextDay, previusDay } from '../../store/action'
+import { nextDay, previusDay, setDay } from '../../store/action'
 // import { fetchAllData} from '../../store/action' ---------------mockServer------------
 /* eslint-disable no-unused-vars */
 import { Chart as ChartJS } from 'chart.js/auto'
@@ -16,10 +16,13 @@ export const Graph = () => {
     const dispatch = useDispatch();
     const allData = useSelector(state => state.data);
     const [field, setField] = useState("sens-test-sht31-rs485");
-    const [showTime, setShowTime] = useState([]);
     const [newData, setNewData] = useState([]);
     const [dailyData, setDailyData] = useState([]);
     const toDay = useSelector(state => state.day)
+    const [hide, setHide] =useState(false) 
+    const [unActiveNext, setUnActiveNext] =useState(false)
+    const [unActivePrev, setUnActivePrev] =useState(false) 
+
 
 
     useEffect(() => {
@@ -38,25 +41,48 @@ export const Graph = () => {
             }
             )
         )
-
-
     }, [allData, field])
 
     useEffect(() => {
-        if (newData.length > 1) setDailyData(newData.filter((arr) => arr.day === toDay))
+        if (newData.length > 1) {
+            setDailyData(newData.filter((arr) => arr.day === toDay))}
     }, [newData, field, toDay])
 
-    useEffect(() => {
-        const myTime = dailyData.map((arr) => arr.time.split(/(-|T|:|\.)/));
-        setShowTime(myTime && myTime.map((arr) => `${arr[4]}-${arr[2]} ${arr[6]}:${arr[8]}`))
-    }, [dailyData])
+
+
+    const myTime = dailyData.map((arr) => arr.time.split(/(-|T|:|\.)/));
+    const showTime = ()=>myTime && myTime.map((arr) => `${arr[4]}-${arr[2]} ${arr[6]}:${arr[8]}`)
+
+    const myDay = dailyData.length > 1 && dailyData[50].time.split(/(-|T|:|\.)/)
+    const showDay = myDay && myDay[4] + "-"+ myDay[2]
 
     const nextDays = () => {
         toDay < newData[newData.length - 1].day && dispatch(nextDay(toDay));
+        toDay === newData[newData.length - 1].day -1 && setUnActiveNext(true)
+        toDay >= newData[0].day && setUnActivePrev(false)
+        setHide(false)
     }
     const previusDays = () => {
         toDay > newData[0].day && dispatch(previusDay(toDay));
+        toDay <= newData[newData.length - 1].day && setUnActiveNext(false)
+        toDay=== newData[0].day +1 && setUnActivePrev(true)
+        setHide(false)
     }
+
+    const showAllData =() =>{
+        setDailyData(newData); 
+        setHide(true); 
+        setUnActiveNext(false)}
+    
+
+    const showDayByDay =()=>{
+        setHide(false); 
+        setUnActiveNext(false); 
+        if (toDay> newData[0].day) {
+        dispatch(setDay(toDay-1)); setUnActiveNext(false)
+        } else {dispatch(setDay(toDay+1)); setUnActivePrev(false)}
+    }
+
 
     return (
         <div className={style.wrapper}>
@@ -89,7 +115,7 @@ export const Graph = () => {
                             }
                         }}
                         data={{
-                            labels: showTime,
+                            labels: showTime(),
                             datasets: [
                                 {
                                     id: 1,
@@ -123,9 +149,16 @@ export const Graph = () => {
                     /></>
                     : <p>loading</p>}
                 <div className={style.day}>
-                    <p onClick={previusDays}>⯇</p>
-                    <p onClick={nextDays}>⯈</p>
+                    <p className={hide || unActivePrev ? style.hide : null } onClick={previusDays}>⯇</p>
+                    <p className= { hide || unActiveNext ? style.hide : null } onClick={nextDays}>⯈</p>  
+                    <div>
+                        <p className={hide && style.hide}>{showDay}</p>
+                        {hide === false ?
+                        <p onClick={showAllData}> show all DATA </p>:
+                        <p onClick={showDayByDay}> show DAY by DAY </p>}
+                    </div>   
                 </div>
+                    
             </div>
 
         </div>

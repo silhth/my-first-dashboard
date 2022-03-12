@@ -28,3 +28,8 @@ export const previusDay = (day) => {
         dispatch({type: "previusDay", payload: day - 1})        
     }
 }
+export const setDay = (day) => {
+    return (dispatch) => {
+        dispatch({type: "setDay", payload: day})        
+    }
+}

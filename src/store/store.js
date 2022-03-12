@@ -17,6 +17,10 @@ const reducer = (state = initialState, action) => {
             return (
                 {...state, data:action.payload}
             );
+        case 'setDay':
+                return (
+                    {...state, day:action.payload}
+                );
 
         case 'nextDay':
             return (
@@ -24,7 +28,7 @@ const reducer = (state = initialState, action) => {
             );
         case 'previusDay':
                 return (
-                    {...state, day:action.payload}
+                {...state, day:action.payload}
                 );
         default:
             return state

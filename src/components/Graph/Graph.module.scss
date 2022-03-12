@@ -27,17 +27,19 @@
 
             &.active {
                 background-color: white;
-                transform: scale(1.1);
+                transform: scale(0.9);
             }
         }
 
     }
     .day{
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
         font-size: 30px;
         color: white;
         cursor: pointer;
+        transition: all 0.3s ease-in-out;
         p{
             margin: 0 10px;
             width: 50px;
@@ -45,6 +47,28 @@
             line-height: 50px;
             background-color:rgb(1, 148, 111);
             border-radius: 50%;
+            
+        }
+        .hide{
+            display: none;
+        }
+
+        div{
+            width: 100%;
+            height: auto;
+            margin-top: 15px;
+            font-size: 15px;
+         p{
+            background-color:rgb(1, 148, 111);
+            border-radius: 50%;
+            width: 30%;
+            height: auto;
+            border-radius: 4px;
+            margin: 10px auto;
+         }
+         .hide{
+             display: none;
+         }
         }
     }
 }
@@ -54,6 +78,23 @@
         .graph{
             width: 90%;
             height: 300px;
+        }
+        .day{
+            font-size: 20px;
+            p{
+                width: 30px;
+                height: 30px;
+                line-height: 30px;
+            }
+            div{
+                margin-top: 5px;
+                display: flex;
+                flex-direction: row;
+                font-size: 12px;
+                p{
+                    margin: 0 auto;
+                }
+            }
         }
     }
 }
