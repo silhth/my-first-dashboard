@@ -149,8 +149,8 @@ export const Graph = () => {
                     /></>
                     : <p>loading</p>}
                 <div className={style.day}>
-                    <p className={hide || unActivePrev ? style.hide : null } onClick={previusDays}>⯇</p>
-                    <p className= { hide || unActiveNext ? style.hide : null } onClick={nextDays}>⯈</p>  
+                    <p className={hide || unActivePrev ? style.hide : null } onClick={previusDays}>&#9664;</p>
+                    <p className= { hide || unActiveNext ? style.hide : null } onClick={nextDays}>&#9654;</p>  
                     <div>
                         <p className={hide && style.hide}>{showDay}</p>
                         {hide === false ?
