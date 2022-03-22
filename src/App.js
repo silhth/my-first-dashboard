@@ -14,7 +14,7 @@ function App() {
   return (
     <div className="App">
     
-      <h1>Precision Agiculture</h1>
+      <h1>Precision Agriculture</h1>
        <Graph/>
     </div>
   );
